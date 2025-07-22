@@ -6,62 +6,73 @@
   <title>PDF Label Printer</title>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
+<style>
+  body {
+    font-family: sans-serif;
+    padding: 20px;
+  }
+
+  label {
+    margin-right: 10px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
+
+  .controls {
+    margin: 15px 0;
+  }
+
+  #printArea {
+    display: flex;
+    flex-wrap: wrap;
+    page-break-inside: avoid;
+  }
+
+  .label {
+    border: 1px solid black !important;
+    margin: 4px;
+    box-sizing: border-box;
+    padding: 10px;
+    text-align: center;
+    background: white;
+  }
+
+  @media print {
+    body * {
+      visibility: hidden;
     }
 
-    label {
-      margin-right: 10px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-    }
-
-    .controls {
-      margin: 15px 0;
+    #printArea, #printArea * {
+      visibility: visible;
     }
 
     #printArea {
-      display: flex;
-      flex-wrap: wrap;
-      page-break-inside: avoid;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
     }
 
     .label {
-      border: 1px solid #ccc;
-      margin: 4px;
+      border: 1px solid black !important;
+      border-style: solid;
+      border-width: 1px;
+      border-color: black;
       box-sizing: border-box;
-      padding: 10px;
-      text-align: center;
+      background: white;
     }
+  }
+</style>
 
-    @media print {
-      body * {
-        visibility: hidden;
-      }
-
-      #printArea, #printArea * {
-        visibility: visible;
-      }
-
-      #printArea {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-      }
-    }
-  </style>
 </head>
 <body>
 
