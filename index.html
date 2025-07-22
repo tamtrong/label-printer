@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Label Printer (80x50mm)</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    .label {
+      width: 80mm;
+      height: 50mm;
+      border: 1px solid black;
+      margin: 10px auto;
+      padding: 5mm;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      page-break-after: always;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printArea, #printArea * {
+        visibility: visible;
+      }
+      #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Product Label Printer (80x50mm)</h1>
+  <input type="file" accept=".csv" id="csvInput" />
+  <div id="tableContainer"></div>
+  <button onclick="printLabels()" style="margin-top: 10px;">Print Selected</button>
+
+  <div id="printArea"></div>
+
+  <script>
+    let products = [];
+
+    document.getElementById("csvInput").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          products = results.data;
+          renderTable();
+        }
+      });
+    });
+
+    function renderTable() {
+      const container = document.getElementById("tableContainer");
+      container.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Select</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Barcode</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${products.map((p, i) => `
+              <tr>
+                <td><input type="checkbox" data-index="${i}" /></td>
+                <td>${p.Name}</td>
+                <td>${p.Price}</td>
+                <td>${p.BarCode}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function printLabels() {
+      const checkboxes = document.querySelectorAll("input[type=checkbox]:checked");
+      const selected = Array.from(checkboxes).map(cb => products[cb.dataset.index]);
+      const printArea = document.getElementById("printArea");
+      printArea.innerHTML = "";
+
+      selected.forEach((p, idx) => {
+        const labelDiv = document.createElement("div");
+        labelDiv.className = "label";
+
+        const title = document.createElement("h2");
+        title.textContent = p.Name;
+        const price = document.createElement("p");
+        price.textContent = "$" + p.Price;
+
+        const canvas = document.createElement("canvas");
+        canvas.id = "barcode-" + idx;
+
+        labelDiv.appendChild(title);
+        labelDiv.appendChild(price);
+        labelDiv.appendChild(canvas);
+        printArea.appendChild(labelDiv);
+
+        JsBarcode(canvas, p.BarCode, {
+          format: "EAN13",
+          displayValue: false,
+          width: 2,
+          height: 40
+        });
+      });
+
+      setTimeout(() => window.print(), 500);
+    }
+  </script>
+</body>
+</html>
