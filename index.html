@@ -38,12 +38,16 @@
   }
 
   .label {
-    border: 1px solid black !important;
-    margin: 4px;
+    margin: 0;
     box-sizing: border-box;
     padding: 10px;
     text-align: center;
     background: white;
+
+    border-top: 1px solid black !important;
+    border-bottom: 1px solid black !important;
+    border-left: none !important;
+    border-right: none !important;
   }
 
   @media print {
@@ -63,15 +67,16 @@
     }
 
     .label {
-      border: 1px solid black !important;
-      border-style: solid;
-      border-width: 1px;
-      border-color: black;
-      box-sizing: border-box;
       background: white;
+
+      border-top: 1px solid black !important;
+      border-bottom: 1px solid black !important;
+      border-left: none !important;
+      border-right: none !important;
     }
   }
 </style>
+
 
 </head>
 <body>
